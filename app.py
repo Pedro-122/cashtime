@@ -1,10 +1,10 @@
 from flask_cors import CORS
-CORS(app)
-
 from flask import Flask, request, jsonify
 import requests
 
 app = Flask(__name__)
+
+CORS(app)
 
 # Dados do cliente fixo (sempre será gerado no nome dele)
 CLIENTE_NOME = "Antonio Jose da Silva Ramos"
