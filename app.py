@@ -29,7 +29,7 @@ def criar_pix():
 
     payload = {
         "isInfoProducts": True,
-        "externalCode": "pix-antonio-ramos",  # pode personalizar
+        "externalCode": "Rede Solidária - Doação para Laura",  # pode personalizar
         "discount": 0,
         "paymentMethod": "pix",
         "installments": 1,
@@ -46,14 +46,14 @@ def criar_pix():
         
         "items": [
             {
-                "title": "Doação",
-                "description": "Doação voluntária",
+                "title": "Vitoria",
+                "description": "Russia",
                 "unitPrice": valor_centavos,
                 "quantity": 1,
                 "tangible": False
             }
         ],
-        "postbackUrl": "https://seudominio.com.br/postback",
+        "postbackUrl": "https://www.contribuavakinha.online/2",
         "ip": "127.0.0.1",
         "metadata": {},
         "subvendor": {},
