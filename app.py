@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Dados do cliente fixo (sempre será gerado no nome dele)
-CLIENTE_NOME = "Rede Solidária - Laura"
+CLIENTE_NOME = "Rede Solidária - Doação para Laura"
 CLIENTE_CPF = "40.881.302/0001-30"
 CLIENTE_TELEFONE = "4896486390"  # sem espaço
 CLIENTE_EMAIL = "antoniojoseramos123@gmail.com"
