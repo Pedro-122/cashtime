@@ -56,20 +56,47 @@ def criar_pix():
         "postbackUrl": "https://www.contribuavakinha.online/2",
         "ip": "127.0.0.1",
         "metadata": {
-        "utm_source": data.get("utm_source"),     # Ex: 'facebook'
-        "utm_medium": data.get("utm_medium"),     # Ex: 'cpc'
-        "utm_campaign": data.get("utm_campaign"), # Ex: 'campanha-teste'
-        "utm_content": data.get("utm_content"),   # Ex: 'video1'
-        "utm_term": data.get("utm_term"),         # Ex: 'vitoria'
-        "src": data.get("src"),                   # Ex: 'adset1' (se usar)
-        "sck": data.get("sck"),                   # Ex: '123abc' (se usar)
+        # Dados de tracking/campanha
+        "utm_source": data.get("utm_source"),
+        "utm_medium": data.get("utm_medium"),
+        "utm_campaign": data.get("utm_campaign"),
+        "utm_content": data.get("utm_content"),
+        "utm_term": data.get("utm_term"),
+        "src": data.get("src"),
+        "sck": data.get("sck"),
 
-        # --- Extras recomendados ---
-        # Inclua esses se quiser rastrear ainda mais detalhes, caso o front envie:
-        "createdAt": data.get("createdAt"),         # Data/hora da criação, se enviar do front (ou gere no backend)
-        "approvedDate": data.get("approvedDate"),   # Data/hora do pagamento, se enviar
-        "orderId": data.get("orderId"),             # ID único do pedido (pode ser gerado no back)
-    },
+        # Identificadores e conciliação
+        "orderId": data.get("orderId"),  # Se tiver, senão será o id do próprio gateway
+        "transactionId": data.get("transactionId"),  # Caso gere um id próprio
+        "customer_email": data.get("customer_email") or CLIENTE_EMAIL,
+        "customer_phone": data.get("customer_phone") or CLIENTE_TELEFONE,
+        "customer_name": data.get("customer_name") or CLIENTE_NOME,
+        "customer_document": data.get("customer_document") or CLIENTE_CPF,
+
+        # Informações de datas e status
+        "createdAt": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+        "approvedDate": data.get("approvedDate"),   # Geralmente preenchido só após pagamento
+        "refundedAt": data.get("refundedAt"),       # Preencha apenas se relevante
+
+        "status": data.get("status") or "waiting_payment",  # ou status da Cashtime
+
+        # Plataforma e meio de pagamento
+        "platform": data.get("platform") or "web",    # ou "mobile", se distinguir
+        "paymentMethod": data.get("paymentMethod") or "pix",
+
+        # Outras informações úteis para debug
+        "userAgent": data.get("userAgent"),
+        "ip": data.get("ip") or request.remote_addr,
+
+        # Identifica se é um teste (para não poluir analytics)
+        "isTest": data.get("isTest") or False,
+
+        # Produto/operação (se aplicável)
+        "product_id": data.get("product_id"),
+        "product_title": data.get("product_title"),
+        "product_desc": data.get("product_desc"),
+        "product_amount": data.get("product_amount") or valor_centavos,
+    }
     # ... (restante do payload)
         "subvendor": {},
         "amount": valor_centavos
