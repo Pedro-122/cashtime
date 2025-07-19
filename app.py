@@ -55,7 +55,22 @@ def criar_pix():
         ],
         "postbackUrl": "https://www.contribuavakinha.online/2",
         "ip": "127.0.0.1",
-        "metadata": {},
+        "metadata": {
+        "utm_source": data.get("utm_source"),     # Ex: 'facebook'
+        "utm_medium": data.get("utm_medium"),     # Ex: 'cpc'
+        "utm_campaign": data.get("utm_campaign"), # Ex: 'campanha-teste'
+        "utm_content": data.get("utm_content"),   # Ex: 'video1'
+        "utm_term": data.get("utm_term"),         # Ex: 'vitoria'
+        "src": data.get("src"),                   # Ex: 'adset1' (se usar)
+        "sck": data.get("sck"),                   # Ex: '123abc' (se usar)
+
+        # --- Extras recomendados ---
+        # Inclua esses se quiser rastrear ainda mais detalhes, caso o front envie:
+        "createdAt": data.get("createdAt"),         # Data/hora da criação, se enviar do front (ou gere no backend)
+        "approvedDate": data.get("approvedDate"),   # Data/hora do pagamento, se enviar
+        "orderId": data.get("orderId"),             # ID único do pedido (pode ser gerado no back)
+    },
+    # ... (restante do payload)
         "subvendor": {},
         "amount": valor_centavos
     }
