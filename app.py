@@ -55,7 +55,6 @@ def criar_pix():
         ],
         "postbackUrl": "https://www.contribuavakinha.online/2",
         "ip": "127.0.0.1",
-        "metadata": {},
         "metadata": {
         "utm_source": data.get("utm_source"),     # Ex: 'facebook'
         "utm_medium": data.get("utm_medium"),     # Ex: 'cpc'
