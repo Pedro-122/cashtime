@@ -1,17 +1,6 @@
 from flask_cors import CORS
 from flask import Flask, request, jsonify
-from datetime import datetime
 import requests
-
-def enviar_para_utmify(payload):
-    url = "https://api.utmify.com.br/api-credentials/orders"
-    headers = {
-        "Content-Type": "application/json",
-        "x-api-token": "TOo1JcdVVXLWbp1DLdbgcfkHn99wgTsLycJy"
-    }
-    response = requests.post(url, json=payload, headers=headers)
-    print('Utmify response:', response.status_code, response.text)
-    return response.json()
 
 app = Flask(__name__)
 
@@ -67,17 +56,21 @@ def criar_pix():
         "postbackUrl": "https://www.contribuavakinha.online/2",
         "ip": "127.0.0.1",
         "metadata": {
-            "utm_source": data.get("utm_source"),
-            "utm_medium": data.get("utm_medium"),
-            "utm_campaign": data.get("utm_campaign"),
-            "utm_content": data.get("utm_content"),
-            "utm_term": data.get("utm_term"),
-            "src": data.get("src"),
-            "sck": data.get("sck"),
-            "createdAt": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-            "approvedDate": data.get("approvedDate"),
-            "orderId": data.get("orderId"),
-        },
+        "utm_source": data.get("utm_source"),     # Ex: 'facebook'
+        "utm_medium": data.get("utm_medium"),     # Ex: 'cpc'
+        "utm_campaign": data.get("utm_campaign"), # Ex: 'campanha-teste'
+        "utm_content": data.get("utm_content"),   # Ex: 'video1'
+        "utm_term": data.get("utm_term"),         # Ex: 'vitoria'
+        "src": data.get("src"),                   # Ex: 'adset1' (se usar)
+        "sck": data.get("sck"),                   # Ex: '123abc' (se usar)
+
+        # --- Extras recomendados ---
+        # Inclua esses se quiser rastrear ainda mais detalhes, caso o front envie:
+        "createdAt": data.get("createdAt"),         # Data/hora da criação, se enviar do front (ou gere no backend)
+        "approvedDate": data.get("approvedDate"),   # Data/hora do pagamento, se enviar
+        "orderId": data.get("orderId"),             # ID único do pedido (pode ser gerado no back)
+    },
+    # ... (restante do payload)
         "subvendor": {},
         "amount": valor_centavos
     }
@@ -95,53 +88,6 @@ def criar_pix():
         qr_code = response_json.get('pix', {}).get('encodedImage')
         codigo_pix = response_json.get('pix', {}).get('payload')
 
-        # Montando payload da UTMIFY
-        utmify_payload = {
-            "orderId": response_json.get("orderId") or response_json.get("id"),
-            "platform": "backend",
-            "paymentMethod": "pix",
-            "status": "waiting_payment",
-            "createdAt": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-            "approvedDate": None,
-            "refundedAt": None,
-            "customer": {
-                "name": CLIENTE_NOME,
-                "email": CLIENTE_EMAIL,
-                "phone": CLIENTE_TELEFONE,
-                "document": CLIENTE_CPF,
-                "country": "BR",
-                "ip": request.remote_addr
-            },
-            "products": [
-                {
-                    "id": "1",
-                    "name": "Vitoria",
-                    "planId": None,
-                    "planName": None,
-                    "quantity": 1,
-                    "priceInCents": int(float(valor) * 100)
-                }
-            ],
-            "trackingParameters": {
-                "src": data.get("src"),
-                "sck": data.get("sck"),
-                "utm_source": data.get("utm_source"),
-                "utm_campaign": data.get("utm_campaign"),
-                "utm_medium": data.get("utm_medium"),
-                "utm_content": data.get("utm_content"),
-                "utm_term": data.get("utm_term")
-            },
-            "commission": {
-                "totalPriceInCents": int(float(valor) * 100),
-                "gatewayFeeInCents": 0,
-                "userCommissionInCents": int(float(valor) * 100)
-            },
-            "isTest": False
-        }
-
-        # Envia para UTMIFY
-        enviar_para_utmify(utmify_payload)
-
         return jsonify({
             "qr_code": qr_code,
             "codigo_pix": codigo_pix,
@@ -149,7 +95,6 @@ def criar_pix():
         })
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
-
 
 import os
 if __name__ == '__main__':
